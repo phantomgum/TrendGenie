@@ -4,53 +4,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Idea Generator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Forgekit</title>
     <style>
         :root {
-            --primary: #6d28d9;
-            --primary-hover: #5b21b6;
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0a0a0f;
+            --surface: #16161e;
+            --text: #ffffff;
+            --text-muted: #8b8b98;
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: none;
+        }
+        
+        ::-webkit-scrollbar {
+            display: none;
         }
 
         body {
             background-color: var(--bg);
             color: var(--text);
-            font-family: 'Outfit', sans-serif;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding: 2rem;
+            width: 100%;
+        }
+
+        .logo {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: -0.01em;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            background-color: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
         }
 
         .container {
             width: 100%;
-            max-width: 1200px;
-            padding: 2rem;
-            box-sizing: border-box;
+            max-width: 1100px;
+            padding: 8rem 2rem 4rem 2rem;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
+        .section-header {
+            margin-bottom: 2rem;
         }
 
-        h1 {
-            font-size: 3rem;
-            margin: 0 0 0.5rem 0;
-            background: linear-gradient(to right, #a855f7, #ec4899);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        p {
+        .section-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
             color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        h2.section-heading {
+            font-size: 2rem;
             margin: 0;
+            color: var(--text);
+            font-weight: 500;
+            letter-spacing: -0.02em;
         }
 
         .input-group {
@@ -62,85 +100,68 @@
         input {
             flex: 1;
             padding: 1rem 1.5rem;
-            border-radius: 999px;
-            border: 1px solid var(--surface);
-            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background-color: var(--surface);
             color: var(--text);
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-family: inherit;
             outline: none;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         input:focus {
             border-color: var(--primary);
-            box-shadow: 0 0 0 2px rgba(109, 40, 217, 0.3);
+            box-shadow: 0 0 0 1px var(--primary);
         }
 
         button {
-            padding: 1rem 2rem;
-            border-radius: 999px;
-            border: none;
+            padding: 1rem 1.5rem;
+            border-radius: 6px;
+            border: 1px solid transparent;
             background-color: var(--primary);
             color: white;
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 500;
             font-family: inherit;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background-color: var(--primary-hover);
-            transform: translateY(-2px);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         /* Loading spinner */
         .loader {
             display: none;
-            text-align: center;
-            margin: 2rem 0;
-        }
-
-        .loader::after {
-            content: '';
-            display: inline-block;
-            width: 2rem;
-            height: 2rem;
-            border: 3px solid rgba(255, 255, 255, 0.1);
-            border-top-color: var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
         }
 
         .card {
             background-color: var(--surface);
-            border-radius: 20px;
+            border-radius: 6px;
             padding: 2rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             display: none;
-            transform: translateY(20px);
+            border: 1px solid var(--border);
             opacity: 0;
-            transition: all 0.5s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: opacity 0.5s ease;
+            position: relative;
         }
 
         .card.visible {
             display: block;
-            transform: translateY(0);
             opacity: 1;
         }
 
         .discover-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
+            gap: 1.5rem;
             opacity: 0;
             transition: opacity 0.5s ease;
         }
@@ -155,63 +176,89 @@
             }
         }
 
-        .card h2 {
+        .card h2, .card h3 {
             margin-top: 0;
-            color: white;
+            color: var(--text);
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            font-size: 1.25rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .card h2 span, .card h3 span {
+            color: var(--text);
         }
 
         .category {
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category:last-child {
+            margin-bottom: 0;
         }
 
         .category-title {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
-            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
 
         .category-content {
-            color: var(--text-muted);
+            color: #d1d1d6;
             line-height: 1.6;
+            font-size: 0.95rem;
             margin: 0;
         }
 
         .error {
             color: #ef4444;
-            text-align: center;
+            text-align: left;
             margin-top: 1rem;
             display: none;
             background: rgba(239, 68, 68, 0.1);
             padding: 1rem;
-            border-radius: 10px;
+            border-radius: 6px;
             word-wrap: break-word;
+            font-size: 0.9rem;
         }
 
         /* Tabs Styling */
         .tabs {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-bottom: 3rem;
+            background-color: var(--surface);
+            padding: 0.35rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .tab-btn {
             background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: none;
             color: var(--text-muted);
-            border-radius: 999px;
-            padding: 0.75rem 2rem;
+            border-radius: 4px;
+            padding: 0.5rem 1.5rem;
             margin: 0;
-            box-shadow: none;
+            font-size: 0.9rem;
+            cursor: pointer;
         }
 
         .tab-btn.active {
-            background-color: var(--primary);
-            color: white;
-            border-color: var(--primary);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+        }
+        
+        .tab-btn:hover:not(.active) {
+            background-color: transparent;
+            color: var(--text);
         }
 
         .tab-content {
@@ -220,44 +267,59 @@
 
         .tab-content.active {
             display: block;
-            animation: fadeInTab 0.4s ease;
+            animation: fadeInTab 0.3s ease;
         }
 
         @keyframes fadeInTab {
             from {
                 opacity: 0;
-                transform: translateY(10px);
             }
-
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
+        }
+
+        /* Typewriter Cursor */
+        .blinking-cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: var(--primary);
+            margin-left: 2px;
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         /* Loading Skeleton */
         .skeleton {
-            animation: pulse-skel 1.5s infinite ease-in-out;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.0) 0%, rgba(99, 102, 241, 0.08) 50%, rgba(99, 102, 241, 0.0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+            background-color: rgba(255, 255, 255, 0.02);
+            border-radius: 4px;
             margin-bottom: 1rem;
         }
 
         .skeleton-title {
-            height: 32px;
-            width: 60%;
+            height: 28px;
+            width: 50%;
             margin-top: 0;
             margin-bottom: 1.5rem;
         }
 
         .skeleton-tagline {
-            height: 22px;
-            width: 85%;
+            height: 18px;
+            width: 75%;
             margin-bottom: 2.5rem;
         }
 
         .skeleton-body {
-            height: 16px;
+            height: 14px;
             width: 100%;
             margin-bottom: 0.75rem;
         }
@@ -271,35 +333,24 @@
         }
 
         .skeleton-category-title {
-            height: 12px;
-            width: 30%;
+            height: 10px;
+            width: 20%;
             margin-bottom: 1rem;
         }
 
-        @keyframes pulse-skel {
-            0% {
-                opacity: 0.6;
-            }
-
-            50% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 0.6;
-            }
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
 
 <body>
+    <nav>
+        <div class="logo">Forgekit <span class="dot"></span></div>
+    </nav>
 
     <div class="container">
-        <header>
-            <h1>Idea Generator</h1>
-            <p>Tell us what you want to learn, get a project to build.</p>
-        </header>
-
         <div class="tabs">
             <button class="tab-btn active" data-target="discoverTab">Discovery</button>
             <button class="tab-btn" data-target="learnTab">Learn</button>
@@ -307,10 +358,11 @@
 
         <div id="discoverTab" class="tab-content active">
             <section id="discoverySection" style="margin-bottom: 4rem;">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
-                    <h2
-                        style="margin: 0; background: linear-gradient(to right, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-                        Discover what to build</h2>
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+                    <div class="section-header" style="margin-bottom: 0;">
+                        <div class="section-label">Trending</div>
+                        <h2 class="section-heading">Discover what to build</h2>
+                    </div>
                     <button id="refreshDiscoverBtn" type="button">Refresh ideas</button>
                 </div>
 
@@ -323,6 +375,11 @@
 
         <div id="learnTab" class="tab-content">
             <div style="max-width: 600px; margin: 0 auto;">
+                <div class="section-header" style="text-align: center;">
+                    <div class="section-label">Playground</div>
+                    <h2 class="section-heading">Generate a custom project</h2>
+                </div>
+            
                 <form id="ideaForm" class="input-group">
                     <input type="text" id="goalInput" placeholder="e.g. Machine Learning, React, Go..." required>
                     <button type="submit">Generate</button>
@@ -331,53 +388,7 @@
                 <div class="loader" id="loader"></div>
                 <div class="error" id="errorMsg"></div>
 
-                <div class="card" id="ideaCard">
-                    <h2 id="cardTitle"></h2>
-                    <p id="cardTagline"
-                        style="font-style: italic; margin-bottom: 1.5rem; color: var(--primary); font-weight: 600; font-size: 1.1rem; line-height: 1.4;">
-                    </p>
-
-                    <div class="category">
-                        <div class="category-title">Description</div>
-                        <p class="category-content" id="cardDesc"></p>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">Why This Works</div>
-                        <p class="category-content" id="cardWhyWorks"></p>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">Core Features</div>
-                        <ul class="category-content" id="cardFeatures" style="margin-top: 0; padding-left: 1.2rem;">
-                        </ul>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">What you'll learn</div>
-                        <ul class="category-content" id="cardLearn" style="margin-top: 0; padding-left: 1.2rem;"></ul>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">Tools & Tech</div>
-                        <p class="category-content" id="cardTools"></p>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">First Step</div>
-                        <p class="category-content" id="cardFirstStep"></p>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">First Step</div>
-                        <p class="category-content" id="cardFirstStep"></p>
-                    </div>
-
-                    <div class="category">
-                        <div class="category-title">Estimated Time</div>
-                        <p class="category-content" id="cardTime"></p>
-                    </div>
-                </div>
+                <div class="card" id="ideaCard"></div>
             </div>
         </div>
     </div>
@@ -418,19 +429,44 @@
 
         window.renderQueue = [];
         window.renderInterval = null;
+        window.cursorEl = document.createElement('span');
+        window.cursorEl.className = 'blinking-cursor';
 
-        function startRenderQueue() {
+        const skeletonHTML = `
+            <div class="skeleton-title-container"><div class="skeleton skeleton-title"></div></div>
+            <div class="skeleton-tagline-container"><div class="skeleton skeleton-tagline"></div></div>
+            <div class="skeleton-category category-desc-container">
+                <div class="skeleton skeleton-category-title"></div>
+                <div class="skeleton skeleton-body"></div>
+                <div class="skeleton skeleton-body short"></div>
+            </div>
+            <div class="skeleton-category category-firststep-container">
+                <div class="skeleton skeleton-category-title"></div>
+                <div class="skeleton skeleton-body"></div>
+                <div class="skeleton skeleton-body short"></div>
+            </div>
+        `;
+
+        function startRenderQueue(onDone = null) {
             if (window.renderInterval) clearInterval(window.renderInterval);
             window.renderQueue = [];
             window.renderInterval = setInterval(() => {
-                if (window.renderQueue.length === 0) return;
+                if (window.renderQueue.length === 0) {
+                    if (onDone) onDone();
+                    return;
+                }
 
                 let processedChar = false;
                 while (window.renderQueue.length > 0 && !processedChar) {
                     const action = window.renderQueue.shift();
                     if (action.type === 'char') {
-                        if (action.el) action.el.textContent += action.char;
+                        if (action.el) {
+                            action.el.appendChild(document.createTextNode(action.char));
+                            action.el.appendChild(window.cursorEl);
+                        }
                         processedChar = true; // Wait for next tick for next character
+                    } else if (action.type === 'clear') {
+                        if (action.el) action.el.innerHTML = '';
                     } else if (action.type === 'html') {
                         if (action.el) action.el.innerHTML = action.html;
                     } else if (action.type === 'append') {
@@ -457,24 +493,34 @@
             errorMsg.style.display = 'none';
             btn.disabled = true;
 
-            card.innerHTML = '';
+            card.innerHTML = skeletonHTML;
             card.style.display = 'block';
             void card.offsetWidth;
             card.classList.add('visible');
 
             const eventSource = new EventSource(`/generate-idea?goal=${encodeURIComponent(goal)}`);
 
-            startRenderQueue();
-
+            let isFirstChunk = true;
             let currentField = null;
             let fieldBuffer = "";
             let currentContentEl = null;
+
+            startRenderQueue(() => {
+                // If queue is completely empty and stream is closed, maybe remove cursor
+            });
 
             eventSource.onmessage = function (event) {
                 if (event.data === "[DONE]") {
                     eventSource.close();
                     btn.disabled = false;
+                    window.renderQueue.push({ type: 'html', el: window.cursorEl, html: '' }); // Effectively erase cursor or remove it
+                    if (window.cursorEl.parentNode) window.cursorEl.parentNode.removeChild(window.cursorEl);
                     return;
+                }
+
+                if (isFirstChunk) {
+                    window.renderQueue.push({ type: 'clear', el: card });
+                    isFirstChunk = false;
                 }
 
                 let chunk = "";
@@ -606,6 +652,7 @@
                 div.style.display = 'block';
                 div.style.transform = 'none';
                 div.style.opacity = '1';
+                div.innerHTML = skeletonHTML;
                 discoverCardsContainer.appendChild(div);
             }
             void discoverCardsContainer.offsetWidth;
@@ -613,6 +660,7 @@
 
             startRenderQueue();
 
+            let isFirstChunk = true;
             let currentCardIndex = -1;
             let currentField = null;
             let fieldBuffer = "";
@@ -622,7 +670,15 @@
                 if (event.data === "[DONE]") {
                     eventSource.close();
                     discoverBtn.disabled = false;
+                    if (window.cursorEl.parentNode) window.cursorEl.parentNode.removeChild(window.cursorEl);
                     return;
+                }
+
+                if (isFirstChunk) {
+                    for (let i = 0; i < 3; i++) {
+                        window.renderQueue.push({ type: 'clear', el: discoverCardsContainer.children[i] });
+                    }
+                    isFirstChunk = false;
                 }
 
                 let chunk = "";

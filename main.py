@@ -111,7 +111,7 @@ def discover_ideas():
 
     # 2. Hacker News Top Stories
     try:
-        hn_url = "https://hacker-news.firebaseio.com/v1/topstories.json"
+        hn_url = "https://hacker-news.firebaseio.com/v0/topstories.json"
         hn_res = requests.get(hn_url)
         hn_res.raise_for_status()
         top_ids = hn_res.json()[:10]
@@ -120,7 +120,7 @@ def discover_ideas():
         
         hn_stories = []
         for story_id in top_ids:
-            story_res = requests.get(f"https://hacker-news.firebaseio.com/v1/item/{story_id}.json")
+            story_res = requests.get(f"https://hacker-news.firebaseio.com/v0/item/{story_id}.json")
             story_data = story_res.json()
             if story_data and 'title' in story_data:
                 title = story_data['title']

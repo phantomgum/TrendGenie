@@ -76,6 +76,7 @@ pip install -r requirements.txt
 1. Create a free project at supabase.com
 2. Run this SQL in the Supabase query editor to create the table:
 
+'''sql
 create table saved_ideas (
   id uuid default gen_random_uuid() primary key,
   created_at timestamp with time zone default now(),
@@ -89,6 +90,7 @@ create table saved_ideas (
   first_step text,
   estimated_time text
 );
+'''
 
 3. Copy your Project URL and anon public key from project settings
 

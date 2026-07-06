@@ -293,7 +293,7 @@
 
         function createSaveButton(cardData, container) {
             const btn = document.createElement('button');
-            btn.className = 'mt-6 bg-transparent text-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary hover:bg-secondary hover:text-on-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2';
+            btn.className = 'bg-transparent text-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary hover:bg-secondary hover:text-on-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2 flex-1';
             btn.innerHTML = `<span class="material-symbols-outlined">bookmark_add</span> Save Idea`;
             btn.onclick = async () => {
                 btn.disabled = true;
@@ -305,7 +305,7 @@
                         body: JSON.stringify(cardData)
                     });
                     if (res.ok) {
-                        btn.className = 'mt-6 bg-secondary text-on-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2';
+                        btn.className = 'bg-secondary text-on-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2 flex-1';
                         btn.innerHTML = `<span class="material-symbols-outlined">check</span> Saved`;
                     } else {
                         throw new Error("Failed to save");
@@ -314,6 +314,19 @@
                     btn.disabled = false;
                     btn.innerHTML = "Error. Try again";
                 }
+            };
+            container.appendChild(btn);
+        }
+
+        function createStartProjectButton(cardData, container) {
+            const btn = document.createElement('button');
+            btn.className = 'bg-primary text-on-primary font-bold font-label-mono px-4 py-2 rough-border hover:opacity-90 transition-opacity duration-200 transform rotate-[-1deg] flex items-center justify-center gap-2 flex-1';
+            btn.innerHTML = `<span class="material-symbols-outlined">rocket_launch</span> Start Project`;
+            btn.onclick = () => {
+                const safeTitle = (cardData.title || '').replace(/\s+/g, '-').toLowerCase();
+                const safeDesc = cardData.tagline || '';
+                const url = `https://github.com/new?name=${encodeURIComponent(safeTitle)}&description=${encodeURIComponent(safeDesc)}`;
+                window.open(url, '_blank');
             };
             container.appendChild(btn);
         }
@@ -450,8 +463,12 @@
             };
 
             startRenderQueue(() => {
-                if (eventSource.readyState === EventSource.CLOSED && !card.querySelector('button')) {
-                    createSaveButton(generatedData, card);
+                if (eventSource.readyState === EventSource.CLOSED && !card.querySelector('.btn-container')) {
+                    const btnContainer = document.createElement('div');
+                    btnContainer.className = 'btn-container mt-6 flex flex-col sm:flex-row gap-4 w-full';
+                    createStartProjectButton(generatedData, btnContainer);
+                    createSaveButton(generatedData, btnContainer);
+                    card.appendChild(btnContainer);
                     clearInterval(window.renderInterval);
                 }
             });
@@ -605,10 +622,14 @@
             }
 
             startRenderQueue(() => {
-                if (eventSource.readyState === EventSource.CLOSED && discoverCardsContainer.children[0] && !discoverCardsContainer.children[0].querySelector('button')) {
+                if (eventSource.readyState === EventSource.CLOSED && discoverCardsContainer.children[0] && !discoverCardsContainer.children[0].querySelector('.btn-container')) {
                     for (let i = 0; i < 3; i++) {
                         if (discoverCardsContainer.children[i]) {
-                            createSaveButton(discoverGeneratedData[i], discoverCardsContainer.children[i]);
+                            const btnContainer = document.createElement('div');
+                            btnContainer.className = 'btn-container mt-auto pt-6 flex flex-col gap-4 w-full';
+                            createStartProjectButton(discoverGeneratedData[i], btnContainer);
+                            createSaveButton(discoverGeneratedData[i], btnContainer);
+                            discoverCardsContainer.children[i].appendChild(btnContainer);
                         }
                     }
                     clearInterval(window.renderInterval);

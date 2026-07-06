@@ -1,551 +1,212 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html class="dark" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>TrendGenie</title>
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪄</text></svg>">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🪄</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&family=Karla:wght@400;700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "background": "#fcfbf8",
+                        "on-background": "#0f172a",
+                        "surface": "#fcfbf8",
+                        "on-surface": "#0f172a",
+                        "surface-container": "#f1f5f9",
+                        "surface-container-low": "#e2e8f0",
+                        "surface-container-lowest": "#cbd5e1",
+                        "surface-container-high": "#ffffff",
+                        "primary": "#4f46e5",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#c3c0ff",
+                        "secondary": "#0ea5e9",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#f97316",
+                        "on-tertiary": "#ffffff",
+                        "outline": "#94a3b8",
+                        "outline-variant": "#cbd5e1",
+                        "error": "#ef4444",
+                        "error-container": "#fee2e2",
+                        "on-surface-variant": "#475569"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Karla", "sans-serif"],
+                        "headline-lg": ["Bricolage Grotesque", "sans-serif"],
+                        "label-mono": ["Space Mono", "monospace"],
+                        "accent-scribble": ["Bricolage Grotesque", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --primary: #E5E5E6;
-            --primary-text: #08090A;
-            --accent: #5E6AD2;
-            --bg: #08090A;
-            --surface: #121315;
-            --surface-hover: #18191B;
-            --text: #F7F8F8;
-            --text-muted: #8A8F98;
-            --border: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(255, 255, 255, 0.15);
-        }
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); min-height: 100vh; font-family: theme('fontFamily.body-md'); }
+        ::-webkit-scrollbar { display: none; }
+        * { scrollbar-width: none; }
+        
+        .rough-border { border: 2px solid theme('colors.outline'); border-radius: 8px 255px 10px 225px / 255px 5px 225px 3px; }
+        .rough-border-secondary { border: 2px solid theme('colors.secondary'); border-radius: 255px 15px 225px 5px / 15px 225px 5px 255px; }
+        
+        .hard-offset { position: relative; }
+        .hard-offset::after { content: ''; position: absolute; top: 4px; left: 4px; right: -4px; bottom: -4px; border: 2px solid theme('colors.outline-variant'); border-radius: 10px 225px 8px 255px / 225px 5px 255px 3px; z-index: -1; pointer-events: none; }
+        
+        .marker-stroke { background: linear-gradient(135deg, theme('colors.primary') 0%, theme('colors.primary-container') 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; position: relative; display: inline-block; }
+        .marker-stroke::after { content: ''; position: absolute; bottom: 2px; left: -5%; width: 110%; height: 4px; background-color: theme('colors.primary'); border-radius: 255px 15px 225px 5px / 15px 225px 5px 255px; opacity: 0.7; transform: rotate(-1deg); }
+        
+        .doodle-circle { position: relative; display: inline-block; padding: 4px 8px; }
+        .doodle-circle::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px solid theme('colors.secondary'); border-radius: 50% 40% 60% 45% / 45% 60% 40% 50%; transform: rotate(3deg); pointer-events: none; }
+        
+        .stacked-paper { position: relative; }
+        .stacked-paper::before { content: ''; position: absolute; top: 2px; left: -3px; right: 3px; bottom: -2px; border: 1px solid theme('colors.outline-variant'); background-color: theme('colors.surface-container-low'); z-index: -1; transform: rotate(-1.5deg); border-radius: 255px 15px 225px 5px / 15px 225px 5px 255px; }
+        .stacked-paper::after { content: ''; position: absolute; top: -2px; left: 2px; right: -2px; bottom: 2px; border: 1px solid theme('colors.outline-variant'); background-color: theme('colors.surface-container-lowest'); z-index: -2; transform: rotate(1deg); border-radius: 8px 255px 10px 225px / 255px 5px 225px 3px; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .blinking-cursor { display: inline-block; width: 8px; height: 16px; background-color: theme('colors.secondary'); margin-left: 2px; vertical-align: text-bottom; animation: blink 1s step-end infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        
+        .loader { height: 4px; width: 100%; background: theme('colors.surface-container-high'); border-radius: 4px; margin-bottom: 24px; overflow: hidden; position: relative; display: none; }
+        .loader::after { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, theme('colors.secondary'), theme('colors.primary'), transparent); animation: progress-shimmer 1.5s infinite; }
+        @keyframes progress-shimmer { 100% { left: 200%; } }
 
-        * {
-            box-sizing: border-box;
-            scrollbar-width: none;
-        }
+        .error { display: none; background: theme('colors.error-container'); color: theme('colors.error'); padding: 16px; border-radius: 8px; margin-top: 16px; word-wrap: break-word; font-size: 14px; border: 1px solid theme('colors.error'); }
 
-        ::-webkit-scrollbar {
-            display: none;
-        }
-
-        body {
-            background-color: var(--bg);
-            background-image: radial-gradient(circle at top center, rgba(94, 106, 210, 0.08), transparent 40%);
-            color: var(--text);
-            font-family: 'Inter', "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            letter-spacing: -0.01em;
-        }
-
-        nav {
-            position: absolute;
-            top: 0;
-            left: 0;
-            padding: 2rem;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--text);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            letter-spacing: -0.02em;
-        }
-
-        .dot {
-            width: 6px;
-            height: 6px;
-            background-color: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 12px var(--accent);
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1000px;
-            padding: 8rem 2rem 4rem 2rem;
-        }
-
-        .section-header {
-            margin-bottom: 2rem;
-        }
-
-        .section-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--accent);
-            margin-bottom: 0.75rem;
-            font-weight: 600;
-        }
-
-        h2.section-heading {
-            font-size: 2.25rem;
-            margin: 0;
-            color: var(--text);
-            font-weight: 500;
-            letter-spacing: -0.03em;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 0.75rem;
-            margin-bottom: 2.5rem;
-            position: relative;
-        }
-
-        input {
-            flex: 1;
-            padding: 1rem 1.25rem;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background-color: var(--surface);
-            color: var(--text);
-            font-size: 1rem;
-            font-family: inherit;
-            outline: none;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-        }
-
-        input:focus {
-            border-color: var(--border-highlight);
-            background-color: #161719;
-            box-shadow: 0 0 0 1px var(--border-highlight), 0 4px 12px rgba(0, 0, 0, 0.4);
-        }
-
-        input::placeholder {
-            color: #555;
-        }
-
-        button {
-            padding: 0.875rem 1.5rem;
-            border-radius: 9999px;
-            border: 1px solid transparent;
-            background-color: var(--primary);
-            color: var(--primary-text);
-            font-size: 0.9rem;
-            font-weight: 500;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: rgba(0, 0, 0, 0) 0px 8px 2px 0px, rgba(0, 0, 0, 0.01) 0px 5px 2px 0px, rgba(0, 0, 0, 0.04) 0px 3px 2px 0px, rgba(0, 0, 0, 0.07) 0px 1px 1px 0px, rgba(0, 0, 0, 0.08) 0px 0px 1px 0px;
-        }
-
-        button:hover:not(:disabled) {
-            transform: translateY(-1px);
-            opacity: 0.9;
-        }
-
-        button:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        #refreshDiscoverBtn {
-            background-color: #141516;
-            color: var(--text);
-            border: 1px solid var(--border);
-            box-shadow: rgba(255, 255, 255, 0.03) 0px 0px 0px 1px inset, rgba(255, 255, 255, 0.04) 0px 1px 0px 0px inset, rgba(0, 0, 0, 0.6) 0px 0px 0px 1px, rgba(0, 0, 0, 0.1) 0px 4px 4px 0px;
-        }
-
-        #refreshDiscoverBtn:hover:not(:disabled) {
-            background-color: #1a1b1e;
-        }
-
-        /* Loading spinner */
-        .loader {
-            display: none;
-        }
-
-        .card {
-            background-color: var(--surface);
-            border-radius: 12px;
-            padding: 2.5rem;
-            display: none;
-            border: 1px solid var(--border);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-            position: relative;
-            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-            background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.02), transparent);
-        }
-
-        .card.visible {
-            display: block;
-            opacity: 1;
-        }
-
-        .discover-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .discover-grid.visible {
-            opacity: 1;
-        }
-
-        @media (max-width: 900px) {
-            .discover-grid {
-                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            }
-        }
-
-        .card h2,
-        .card h3 {
-            margin-top: 0;
-            color: var(--text);
-            font-weight: 500;
-            letter-spacing: -0.02em;
-            font-size: 1.25rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .category {
-            margin-bottom: 2rem;
-        }
-
-        .category:last-child {
-            margin-bottom: 0;
-        }
-
-        .category-title {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
-
-        .category-content {
-            color: #d1d1d6;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        .category-content li {
-            margin-bottom: 0.5rem;
-        }
-
-        .error {
-            color: #ef4444;
-            text-align: left;
-            margin-top: 1rem;
-            display: none;
-            background: rgba(239, 68, 68, 0.1);
-            padding: 1rem;
-            border-radius: 8px;
-            word-wrap: break-word;
-            font-size: 0.9rem;
-            border: 1px solid rgba(239, 68, 68, 0.2);
-        }
-
-        /* Tabs Styling */
-        .tabs {
-            display: flex;
-            justify-content: center;
-            gap: 0.25rem;
-            margin-bottom: 4rem;
-            background-color: var(--surface);
-            padding: 0.25rem;
-            border-radius: 9999px;
-            border: 1px solid var(--border);
-            width: fit-content;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-
-        .tab-btn {
-            background-color: transparent;
-            border: none;
-            color: var(--text-muted);
-            border-radius: 9999px;
-            padding: 0.5rem 1.25rem;
-            margin: 0;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            box-shadow: none;
-        }
-
-        .tab-btn.active {
-            background-color: #242528;
-            color: var(--text);
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .tab-btn:hover:not(.active) {
-            color: var(--text);
-            transform: none;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeInTab 0.3s ease;
-        }
-
-        @keyframes fadeInTab {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Typewriter Cursor */
-        .blinking-cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background-color: var(--text);
-            margin-left: 2px;
-            vertical-align: text-bottom;
-            animation: blink 1s step-end infinite;
-            opacity: 0.7;
-        }
-
-        @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 0.7;
-            }
-
-            50% {
-                opacity: 0;
-            }
-        }
-
-        /* Loading Skeleton */
-        .skeleton {
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.0) 0%, rgba(255, 255, 255, 0.03) 50%, rgba(255, 255, 255, 0.0) 100%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite linear;
-            background-color: rgba(255, 255, 255, 0.02);
-            border-radius: 4px;
-            margin-bottom: 1rem;
-        }
-
-        .skeleton-title {
-            height: 28px;
-            width: 50%;
-            margin-top: 0;
-            margin-bottom: 1.5rem;
-        }
-
-        .skeleton-tagline {
-            height: 18px;
-            width: 75%;
-            margin-bottom: 2.5rem;
-        }
-
-        .skeleton-body {
-            height: 14px;
-            width: 100%;
-            margin-bottom: 0.75rem;
-        }
-
-        .skeleton-body.short {
-            width: 40%;
-        }
-
-        .skeleton-category {
-            margin-top: 2rem;
-        }
-
-        .skeleton-category-title {
-            height: 10px;
-            width: 20%;
-            margin-bottom: 1rem;
-        }
-
-        @keyframes shimmer {
-            0% {
-                background-position: 200% 0;
-            }
-
-            100% {
-                background-position: -200% 0;
-            }
-        }
-
-        /* Saved Ideas Additions */
-        .save-btn {
-            position: absolute;
-            bottom: 2.5rem;
-            right: 2.5rem;
-            background-color: var(--surface);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            box-shadow: none;
-        }
-
-        .save-btn:hover:not(:disabled) {
-            background-color: var(--surface-hover);
-            border-color: var(--border-highlight);
-            transform: none;
-        }
-
-        .save-btn.saved {
-            color: var(--accent);
-            border-color: rgba(94, 106, 210, 0.3);
-            background-color: rgba(94, 106, 210, 0.1);
-        }
-
-        .save-btn:disabled {
-            opacity: 1;
-            cursor: default;
-        }
-
-        .card-mode-tag {
-            position: absolute;
-            top: 2.5rem;
-            right: 2.5rem;
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-muted);
-            background: rgba(255, 255, 255, 0.05);
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            border: 1px solid var(--border);
-        }
-
-        .delete-btn {
-            position: absolute;
-            bottom: 2.5rem;
-            right: 2.5rem;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 0.5rem 1rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s ease;
-            box-shadow: none;
-        }
-
-        .delete-btn:hover {
-            color: #ef4444;
-            border-color: rgba(239, 68, 68, 0.3);
-            background: rgba(239, 68, 68, 0.05);
-            transform: none;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: var(--text-muted);
-            font-size: 1rem;
-        }
+        .nav-tab-active { color: theme('colors.on-surface'); }
+        .nav-tab-active::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px solid theme('colors.secondary'); border-radius: 50% 40% 60% 45% / 45% 60% 40% 50%; transform: rotate(3deg); pointer-events: none; }
+        .nav-tab-active span.material-symbols-outlined { color: theme('colors.secondary'); }
     </style>
 </head>
+<body class="flex flex-col min-h-screen relative overflow-x-hidden selection:bg-secondary selection:text-on-secondary pb-24 md:pb-0">
+    
+    <!-- Decorative floating scribbles -->
+    <!-- Top layer -->
+    <div class="fixed top-10 left-10 opacity-10 pointer-events-none z-[-1] transform rotate-[15deg]"><span class="material-symbols-outlined text-[100px] text-primary">terminal</span></div>
+    <div class="fixed top-5 left-1/4 opacity-5 pointer-events-none z-[-1] transform rotate-[-12deg]"><span class="material-symbols-outlined text-[80px] text-secondary">database</span></div>
+    <div class="fixed top-20 left-1/2 opacity-10 pointer-events-none z-[-1] transform rotate-[25deg]"><span class="material-symbols-outlined text-[120px] text-tertiary">developer_board</span></div>
+    <div class="fixed top-10 right-1/4 opacity-5 pointer-events-none z-[-1] transform rotate-[-5deg]"><span class="material-symbols-outlined text-[90px] text-on-surface-variant">data_object</span></div>
+    <div class="fixed top-24 right-10 opacity-10 pointer-events-none z-[-1] transform rotate-[30deg]"><span class="material-symbols-outlined text-[110px] text-primary">cloud_sync</span></div>
+    
+    <!-- Middle-Top layer -->
+    <div class="fixed top-1/4 left-5 opacity-10 pointer-events-none z-[-1] transform rotate-[-20deg]"><span class="material-symbols-outlined text-[130px] text-secondary">memory</span></div>
+    <div class="fixed top-1/4 left-1/3 opacity-5 pointer-events-none z-[-1] transform rotate-[10deg]"><span class="material-symbols-outlined text-[70px] text-primary">bug_report</span></div>
+    <div class="fixed top-1/3 right-1/3 opacity-10 pointer-events-none z-[-1] transform rotate-[-15deg]"><span class="material-symbols-outlined text-[140px] text-tertiary">integration_instructions</span></div>
+    <div class="fixed top-1/4 right-5 opacity-5 pointer-events-none z-[-1] transform rotate-[45deg]"><span class="material-symbols-outlined text-[100px] text-secondary">dns</span></div>
 
-<body>
-    <nav>
-        <div class="logo">TrendGenie <span class="dot"></span></div>
-    </nav>
+    <!-- Middle-Bottom layer -->
+    <div class="fixed top-1/2 left-20 opacity-5 pointer-events-none z-[-1] transform rotate-[5deg]"><span class="material-symbols-outlined text-[150px] text-primary">api</span></div>
+    <div class="fixed top-1/2 left-1/2 opacity-10 pointer-events-none z-[-1] transform rotate-[-25deg]"><span class="material-symbols-outlined text-[90px] text-on-surface-variant">schema</span></div>
+    <div class="fixed top-2/3 right-20 opacity-5 pointer-events-none z-[-1] transform rotate-[15deg]"><span class="material-symbols-outlined text-[120px] text-tertiary">webhook</span></div>
+    <div class="fixed top-1/2 right-1/4 opacity-10 pointer-events-none z-[-1] transform rotate-[-35deg]"><span class="material-symbols-outlined text-[110px] text-primary">router</span></div>
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" data-target="discoverTab">Discovery</button>
-            <button class="tab-btn" data-target="learnTab">Learn</button>
-            <button class="tab-btn" data-target="savedTab" onclick="fetchSavedIdeas()">Saved Ideas</button>
+    <!-- Bottom layer -->
+    <div class="fixed bottom-10 left-10 opacity-10 pointer-events-none z-[-1] transform rotate-[-15deg]"><span class="material-symbols-outlined text-[130px] text-tertiary">code_blocks</span></div>
+    <div class="fixed bottom-20 left-1/3 opacity-5 pointer-events-none z-[-1] transform rotate-[20deg]"><span class="material-symbols-outlined text-[90px] text-secondary">devices</span></div>
+    <div class="fixed bottom-5 left-1/2 opacity-10 pointer-events-none z-[-1] transform rotate-[-10deg]"><span class="material-symbols-outlined text-[100px] text-primary">terminal</span></div>
+    <div class="fixed bottom-24 right-1/3 opacity-5 pointer-events-none z-[-1] transform rotate-[40deg]"><span class="material-symbols-outlined text-[80px] text-on-surface-variant">database</span></div>
+    <div class="fixed bottom-10 right-10 opacity-10 pointer-events-none z-[-1] transform rotate-[-5deg]"><span class="material-symbols-outlined text-[140px] text-secondary">developer_board</span></div>
+
+    <!-- Web Header & Nav -->
+    <header class="w-full top-0 sticky bg-background border-b-2 border-outline-variant z-40">
+        <div class="flex justify-between items-center px-8 py-4 w-full">
+            <h1 class="font-headline-lg text-3xl text-primary rotate-[-1deg] marker-stroke">TrendGenie</h1>
         </div>
+        <nav class="hidden md:flex justify-center gap-8 pb-4">
+            <button class="tab-btn nav-tab-active relative font-label-mono text-outline hover:text-on-surface hover:rotate-[-1deg] transition-all p-2 flex items-center gap-2" data-target="discoverTab">
+                <span class="material-symbols-outlined">explore</span> Discovery
+            </button>
+            <button class="tab-btn relative font-label-mono text-outline hover:text-on-surface hover:rotate-[-1deg] transition-all p-2 flex items-center gap-2" data-target="learnTab">
+                <span class="material-symbols-outlined">psychology</span> Intent
+            </button>
+            <button class="tab-btn relative font-label-mono text-outline hover:text-on-surface hover:rotate-[-1deg] transition-all p-2 flex items-center gap-2" data-target="savedTab" onclick="fetchSavedIdeas()">
+                <span class="material-symbols-outlined">bookmark</span> Saved
+            </button>
+        </nav>
+    </header>
 
+    <main class="flex-grow p-8 max-w-7xl mx-auto w-full relative z-10">
+        
+        <!-- Discovery Tab -->
         <div id="discoverTab" class="tab-content active">
-            <section id="discoverySection" style="margin-bottom: 4rem;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
-                    <div class="section-header" style="margin-bottom: 0;">
-                        <div class="section-label">Trending</div>
-                        <h2 class="section-heading">Discover what to build</h2>
-                    </div>
-                    <button id="refreshDiscoverBtn" type="button">Refresh ideas</button>
+            <section id="discoverySection" class="flex flex-col items-start gap-4 mb-12 transform rotate-[-0.5deg]">
+                <div class="flex items-center gap-3 doodle-circle">
+                    <span class="material-symbols-outlined text-secondary animate-pulse" style="font-variation-settings: 'FILL' 1;">radio_button_checked</span>
+                    <span class="font-label-mono text-secondary uppercase tracking-widest">Live Feed</span>
                 </div>
-
-                <div class="loader" id="discoverLoader"></div>
-                <div class="error" id="discoverErrorMsg"></div>
-
-                <div class="discover-grid" id="discoverCards"></div>
+                <div class="flex w-full justify-between items-center">
+                    <h2 class="font-headline-xl text-4xl font-bold text-on-surface marker-stroke">Discover what to build</h2>
+                    <button id="refreshDiscoverBtn" class="bg-transparent text-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary hover:bg-secondary hover:text-on-secondary transition-colors duration-200 transform rotate-[1deg]">
+                        Refresh ideas
+                    </button>
+                </div>
+                <p class="font-accent-scribble text-on-surface-variant max-w-md transform rotate-[1deg]">Mining the noise for the next big signals.</p>
             </section>
+
+            <div class="loader" id="discoverLoader"></div>
+            <div class="error" id="discoverErrorMsg"></div>
+
+            <div id="discoverCards" class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-min hidden"></div>
         </div>
 
+        <!-- Intent Tab -->
         <div id="learnTab" class="tab-content">
-            <div style="max-width: 600px; margin: 0 auto;">
-                <div class="section-header" style="text-align: center;">
-                    <div class="section-label">Playground</div>
-                    <h2 class="section-heading">Generate a custom project</h2>
+            <section class="flex flex-col items-start gap-4 mb-8 transform rotate-[0.5deg]">
+                <div class="flex items-center gap-3 doodle-circle">
+                    <span class="material-symbols-outlined text-tertiary">draw</span>
+                    <span class="font-label-mono text-tertiary uppercase tracking-widest">Playground</span>
                 </div>
+                <h2 class="font-headline-xl text-4xl font-bold text-on-surface marker-stroke">Generate a project</h2>
+            </section>
 
-                <form id="ideaForm" class="input-group">
-                    <input type="text" id="goalInput" placeholder="e.g. Machine Learning, React, Go..." required>
-                    <button type="submit">Generate</button>
-                </form>
+            <form id="ideaForm" class="flex gap-4 mb-12 transform rotate-[-0.5deg]">
+                <input type="text" id="goalInput" placeholder="e.g. Machine Learning, React, Go..." required class="flex-grow bg-surface-container-high border-2 border-outline-variant rounded-none rough-border p-4 text-on-surface font-body-md focus:outline-none focus:border-secondary transition-colors">
+                <button type="submit" class="bg-primary text-on-primary font-bold font-label-mono px-6 py-4 rough-border hover:opacity-90 transition-opacity transform rotate-[1deg]">Generate</button>
+            </form>
 
-                <div class="loader" id="loader"></div>
-                <div class="error" id="errorMsg"></div>
+            <div class="loader" id="loader"></div>
+            <div class="error" id="errorMsg"></div>
 
-                <div class="card" id="ideaCard"></div>
-            </div>
+            <div id="ideaCard" class="hidden"></div>
         </div>
 
+        <!-- Saved Tab -->
         <div id="savedTab" class="tab-content">
-            <div class="section-header">
-                <div class="section-label">Library</div>
-                <h2 class="section-heading">Saved Ideas</h2>
-            </div>
-            <div id="savedEmptyState" class="empty-state">No saved ideas yet. Generate something worth building.</div>
-            <div class="discover-grid visible" id="savedCards"></div>
+            <section class="flex flex-col items-start gap-4 mb-8 transform rotate-[-0.5deg]">
+                <div class="flex items-center gap-3 doodle-circle">
+                    <span class="material-symbols-outlined text-primary">bookmark</span>
+                    <span class="font-label-mono text-primary uppercase tracking-widest">Library</span>
+                </div>
+                <h2 class="font-headline-xl text-4xl font-bold text-on-surface marker-stroke">Saved Ideas</h2>
+            </section>
+            
+            <div id="savedEmptyState" class="text-center p-12 text-on-surface-variant font-accent-scribble text-xl transform rotate-[1deg]">No saved ideas yet. Generate something worth building.</div>
+            <div id="savedCards" class="grid grid-cols-1 md:grid-cols-2 gap-6 hidden"></div>
         </div>
-    </div>
+
+    </main>
+
+    <!-- BottomNavBar (Mobile Only) -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-2 bg-surface-container border-t-2 border-outline-variant rounded-t-[20px]">
+        <button class="tab-btn nav-tab-active relative flex flex-col items-center justify-center text-outline p-2 transition-all" data-target="discoverTab">
+            <span class="material-symbols-outlined">explore</span>
+            <span class="font-label-mono mt-1 text-[10px]">Discovery</span>
+        </button>
+        <button class="tab-btn relative flex flex-col items-center justify-center text-outline p-2 transition-all hover:rotate-[-1deg]" data-target="learnTab">
+            <span class="material-symbols-outlined">psychology</span>
+            <span class="font-label-mono mt-1 text-[10px]">Intent</span>
+        </button>
+        <button class="tab-btn relative flex flex-col items-center justify-center text-outline p-2 transition-all hover:rotate-[-1deg]" data-target="savedTab" onclick="fetchSavedIdeas()">
+            <span class="material-symbols-outlined">bookmark</span>
+            <span class="font-label-mono mt-1 text-[10px]">Saved</span>
+        </button>
+    </nav>
 
     <script>
         // Tab switching logic
@@ -554,31 +215,33 @@
 
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
-                tabBtns.forEach(b => b.classList.remove('active'));
-                tabContents.forEach(c => c.classList.remove('active'));
+                const targetId = btn.dataset.target;
+                
+                // Update all buttons targeting this id to be active (mobile and web)
+                tabBtns.forEach(b => {
+                    if(b.dataset.target === targetId) {
+                        b.classList.add('nav-tab-active');
+                    } else {
+                        b.classList.remove('nav-tab-active');
+                    }
+                });
 
-                btn.classList.add('active');
-                document.getElementById(btn.dataset.target).classList.add('active');
+                tabContents.forEach(c => c.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
             });
         });
+
         const form = document.getElementById('ideaForm');
         const input = document.getElementById('goalInput');
-        const btn = form.querySelector('button');
+        const btn = form.querySelector('button[type="submit"]');
         const loader = document.getElementById('loader');
         const card = document.getElementById('ideaCard');
         const errorMsg = document.getElementById('errorMsg');
 
         const labels = {
-            TITLE: "Title",
-            TAGLINE: "Tagline",
-            INSPIRED_BY: "Inspired By",
-            DESCRIPTION: "Description",
-            WHY: "Why This Works",
-            FEATURES: "Core Features",
-            LEARN: "What you'll learn",
-            TOOLS: "Tools & Tech",
-            FIRST_STEP: "First Step",
-            TIME: "Estimated Time"
+            TITLE: "Title", TAGLINE: "Tagline", INSPIRED_BY: "Inspired By", DESCRIPTION: "Description",
+            WHY: "Why This Works", FEATURES: "Core Features", LEARN: "What you'll learn",
+            TOOLS: "Tools & Tech", FIRST_STEP: "First Step", TIME: "Estimated Time"
         };
 
         window.renderQueue = [];
@@ -587,18 +250,10 @@
         window.cursorEl.className = 'blinking-cursor';
 
         const skeletonHTML = `
-            <div class="skeleton-title-container"><div class="skeleton skeleton-title"></div></div>
-            <div class="skeleton-tagline-container"><div class="skeleton skeleton-tagline"></div></div>
-            <div class="skeleton-category category-desc-container">
-                <div class="skeleton skeleton-category-title"></div>
-                <div class="skeleton skeleton-body"></div>
-                <div class="skeleton skeleton-body short"></div>
-            </div>
-            <div class="skeleton-category category-firststep-container">
-                <div class="skeleton skeleton-category-title"></div>
-                <div class="skeleton skeleton-body"></div>
-                <div class="skeleton skeleton-body short"></div>
-            </div>
+            <div class="h-8 w-3/4 bg-surface-container-high animate-pulse rough-border mb-4"></div>
+            <div class="h-4 w-1/2 bg-surface-container animate-pulse rough-border mb-6"></div>
+            <div class="h-3 w-1/4 bg-surface-container animate-pulse rough-border mb-2"></div>
+            <div class="h-20 w-full bg-surface-container-high animate-pulse rough-border mb-4"></div>
         `;
 
         function startRenderQueue(onDone = null) {
@@ -609,7 +264,6 @@
                     if (onDone) onDone();
                     return;
                 }
-
                 let processedChar = false;
                 while (window.renderQueue.length > 0 && !processedChar) {
                     const action = window.renderQueue.shift();
@@ -618,7 +272,7 @@
                             action.el.appendChild(document.createTextNode(action.char));
                             action.el.appendChild(window.cursorEl);
                         }
-                        processedChar = true; // Wait for next tick for next character
+                        processedChar = true;
                     } else if (action.type === 'clear') {
                         if (action.el) action.el.innerHTML = '';
                     } else if (action.type === 'html') {
@@ -630,7 +284,7 @@
                             action.el.textContent = action.el.textContent.split('|').map(s => s.trim()).filter(Boolean).join(', ');
                         } else {
                             const items = action.el.textContent.split('|').map(s => s.trim()).filter(Boolean);
-                            action.el.innerHTML = items.map(l => `<li>${l}</li>`).join('');
+                            action.el.innerHTML = items.map(l => `<li class="flex gap-2 items-start mb-1"><span class="material-symbols-outlined text-tertiary text-sm mt-1">draw</span> ${l}</li>`).join('');
                         }
                     }
                 }
@@ -639,8 +293,8 @@
 
         function createSaveButton(cardData, container) {
             const btn = document.createElement('button');
-            btn.className = 'save-btn';
-            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></svg> Save idea`;
+            btn.className = 'mt-6 bg-transparent text-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary hover:bg-secondary hover:text-on-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2';
+            btn.innerHTML = `<span class="material-symbols-outlined">bookmark_add</span> Save Idea`;
             btn.onclick = async () => {
                 btn.disabled = true;
                 btn.innerHTML = "Saving...";
@@ -651,8 +305,8 @@
                         body: JSON.stringify(cardData)
                     });
                     if (res.ok) {
-                        btn.className = 'save-btn saved';
-                        btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Saved`;
+                        btn.className = 'mt-6 bg-secondary text-on-secondary font-bold font-label-mono px-4 py-2 rough-border-secondary transition-colors duration-200 transform rotate-[1deg] flex items-center justify-center gap-2';
+                        btn.innerHTML = `<span class="material-symbols-outlined">check</span> Saved`;
                     } else {
                         throw new Error("Failed to save");
                     }
@@ -681,70 +335,51 @@
                     container.style.display = 'grid';
 
                     data.forEach(idea => {
-                        const div = document.createElement('div');
-                        div.className = 'card visible';
-                        div.style.display = 'block';
-                        div.style.padding = '1.5rem 2rem';
+                        const div = document.createElement('article');
+                        div.className = 'bg-surface-container p-6 rough-border hard-offset stacked-paper transform rotate-[0.5deg] hover:rotate-[1deg] transition-transform duration-200 flex flex-col';
 
                         const header = document.createElement('div');
-                        header.style = 'cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none;';
+                        header.className = 'cursor-pointer flex justify-between items-center select-none';
                         header.innerHTML = `
-                            <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
-                                <h3 style="margin:0;color:white;font-size:1.1rem;">${idea.title}</h3>
-                                <span style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); background: rgba(255, 255, 255, 0.05); padding: 0.2rem 0.4rem; border-radius: 4px;">${idea.mode}</span>
+                            <div class="flex items-center gap-3 flex-wrap">
+                                <h3 class="font-headline-lg text-2xl font-bold text-on-surface marker-stroke">${idea.title}</h3>
+                                <div class="bg-secondary text-on-secondary px-2 py-0.5 text-[10px] font-label-mono rough-border transform rotate-[2deg] uppercase">
+                                    #${idea.mode}
+                                </div>
                             </div>
-                            <svg class="chevron" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition: transform 0.2s ease; flex-shrink: 0; transform: rotate(0deg);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                            <span class="material-symbols-outlined chevron transition-transform text-outline">expand_more</span>
                         `;
 
                         const body = document.createElement('div');
-                        body.style = 'display: none; margin-top: 1.5rem; position: relative; padding-bottom: 2rem; border-top: 1px solid var(--border); padding-top: 1.5rem;';
+                        body.className = 'hidden mt-4 pt-4 border-t-2 border-outline-variant border-dashed relative';
 
-                        let html = `
-                            <p style="font-style:italic;margin-bottom:1.5rem;color:var(--primary);font-weight:600;font-size:1.1rem;line-height:1.4;">${idea.tagline}</p>
-                        `;
+                        let html = `<p class="font-accent-scribble text-on-surface-variant mb-6 text-lg transform rotate-[-1deg]">${idea.tagline}</p>`;
 
                         if (idea.inspired_by) {
-                            html += `
-                                <div class="category">
-                                    <div class="category-title">Inspired By</div>
-                                    <p class="category-content">${idea.inspired_by}</p>
-                                </div>
-                            `;
+                            html += `<div class="mb-4"><div class="bg-tertiary text-on-tertiary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[-1deg] inline-block mb-2">Inspired By</div><p class="text-on-surface">${idea.inspired_by}</p></div>`;
                         }
 
                         html += `
-                            <div class="category">
-                                <div class="category-title">Description</div>
-                                <p class="category-content">${idea.description}</p>
-                            </div>
-                            <div class="category">
-                                <div class="category-title">What you'll learn</div>
-                                <ul class="category-content" style="margin-top:0;padding-left:1.2rem;">
-                                    ${(Array.isArray(idea.what_youll_learn) ? idea.what_youll_learn : idea.what_youll_learn.split('|')).map(s => `<li>${(s || '').trim()}</li>`).join('')}
-                                </ul>
-                            </div>
-                            <div class="category">
-                                <div class="category-title">Tools & Tech</div>
-                                <p class="category-content">${(Array.isArray(idea.tools_and_tech) ? idea.tools_and_tech : idea.tools_and_tech.split('|')).map(s => (s || '').trim()).join(', ')}</p>
-                            </div>
-                            <div class="category">
-                                <div class="category-title">First Step</div>
-                                <p class="category-content">${idea.first_step}</p>
-                            </div>
-                            <div class="category">
-                                <div class="category-title">Estimated Time</div>
-                                <p class="category-content">${idea.estimated_time}</p>
-                            </div>
+                            <div class="mb-4"><div class="bg-primary text-on-primary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[1deg] inline-block mb-2">Description</div><p class="text-on-surface">${idea.description}</p></div>
+                            
+                            <div class="mb-4"><div class="bg-secondary text-on-secondary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[-1deg] inline-block mb-2">What you'll learn</div>
+                            <ul class="text-on-surface">
+                                ${(Array.isArray(idea.what_youll_learn) ? idea.what_youll_learn : idea.what_youll_learn.split('|')).map(s => `<li class="flex gap-2 items-start mb-1"><span class="material-symbols-outlined text-tertiary text-sm mt-1">draw</span> ${(s || '').trim()}</li>`).join('')}
+                            </ul></div>
+                            
+                            <div class="mb-4"><div class="bg-tertiary text-on-tertiary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[1deg] inline-block mb-2">Tools & Tech</div>
+                            <p class="text-on-surface font-label-mono text-sm">${(Array.isArray(idea.tools_and_tech) ? idea.tools_and_tech : idea.tools_and_tech.split('|')).map(s => (s || '').trim()).join(', ')}</p></div>
+                            
+                            <div class="mb-4"><div class="bg-primary text-on-primary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[-1deg] inline-block mb-2">First Step</div><p class="text-on-surface">${idea.first_step}</p></div>
+                            
+                            <div class="mb-4"><div class="bg-secondary text-on-secondary px-2 py-0.5 text-xs font-label-mono rough-border transform rotate-[1deg] inline-block mb-2">Estimated Time</div><p class="text-on-surface">${idea.estimated_time}</p></div>
                         `;
 
                         body.innerHTML = html;
 
                         const delBtn = document.createElement('button');
-                        delBtn.className = 'delete-btn';
-                        delBtn.style.position = 'absolute';
-                        delBtn.style.bottom = '0';
-                        delBtn.style.right = '0';
-                        delBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Delete`;
+                        delBtn.className = 'mt-4 text-error font-label-mono flex items-center gap-1 hover:underline transform rotate-[1deg]';
+                        delBtn.innerHTML = `<span class="material-symbols-outlined text-sm">delete</span> Delete`;
                         delBtn.onclick = async () => {
                             delBtn.disabled = true;
                             delBtn.innerHTML = 'Deleting...';
@@ -756,14 +391,8 @@
                                         emptyState.style.display = 'block';
                                         container.style.display = 'none';
                                     }
-                                } else {
-                                    delBtn.disabled = false;
-                                    delBtn.innerHTML = 'Error';
                                 }
-                            } catch (e) {
-                                delBtn.disabled = false;
-                                delBtn.innerHTML = 'Error';
-                            }
+                            } catch(e) {}
                         };
 
                         body.appendChild(delBtn);
@@ -771,16 +400,21 @@
                         div.appendChild(body);
 
                         header.onclick = () => {
-                            const isCollapsed = body.style.display === 'none';
-                            body.style.display = isCollapsed ? 'block' : 'none';
-                            header.querySelector('.chevron').style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+                            const isCollapsed = body.classList.contains('hidden');
+                            if(isCollapsed) {
+                                body.classList.remove('hidden');
+                                header.querySelector('.chevron').style.transform = 'rotate(180deg)';
+                            } else {
+                                body.classList.add('hidden');
+                                header.querySelector('.chevron').style.transform = 'rotate(0deg)';
+                            }
                         };
 
                         container.appendChild(div);
                     });
                 }
             } catch (e) {
-                console.error("Error fetching saved ideas:", e);
+                console.error("Error:", e);
             }
         }
 
@@ -789,15 +423,13 @@
             const goal = input.value.trim();
             if (!goal) return;
 
-            // Reset UI
-            card.classList.remove('visible');
             errorMsg.style.display = 'none';
             btn.disabled = true;
+            loader.style.display = 'block';
 
+            card.className = 'bg-surface-container p-6 rough-border hard-offset stacked-paper transform rotate-[0.5deg] flex flex-col block';
             card.innerHTML = skeletonHTML;
             card.style.display = 'block';
-            void card.offsetWidth;
-            card.classList.add('visible');
 
             const eventSource = new EventSource(`/generate-idea?goal=${encodeURIComponent(goal)}`);
 
@@ -807,8 +439,7 @@
             let currentContentEl = null;
 
             let generatedData = {
-                mode: 'intent',
-                title: '', tagline: '', description: '', inspired_by: '',
+                mode: 'intent', title: '', tagline: '', description: '', inspired_by: '',
                 what_youll_learn: '', tools_and_tech: '', first_step: '', estimated_time: ''
             };
 
@@ -819,17 +450,21 @@
             };
 
             startRenderQueue(() => {
-                // If queue is completely empty and stream is closed, add save btn
-                if (eventSource.readyState === EventSource.CLOSED && !card.querySelector('.save-btn')) {
+                if (eventSource.readyState === EventSource.CLOSED && !card.querySelector('button')) {
                     createSaveButton(generatedData, card);
                     clearInterval(window.renderInterval);
                 }
             });
 
+            const bgColors = ['bg-primary', 'bg-secondary', 'bg-tertiary'];
+            const textColors = ['text-on-primary', 'text-on-secondary', 'text-on-tertiary'];
+            let colorIdx = 0;
+
             eventSource.onmessage = function (event) {
                 if (event.data === "[DONE]") {
                     eventSource.close();
                     btn.disabled = false;
+                    loader.style.display = 'none';
                     window.renderQueue.push({ type: 'html', el: window.cursorEl, html: '' });
                     if (window.cursorEl.parentNode) window.cursorEl.parentNode.removeChild(window.cursorEl);
                     return;
@@ -848,12 +483,12 @@
                     errorMsg.style.display = 'block';
                     eventSource.close();
                     btn.disabled = false;
+                    loader.style.display = 'none';
                     return;
                 }
 
                 for (let i = 0; i < chunk.length; i++) {
                     const char = chunk[i];
-
                     if (char === '[') {
                         fieldBuffer += char;
                     } else if (char === ']' && fieldBuffer.includes('[')) {
@@ -866,55 +501,47 @@
                             const labelText = labels[currentField] || currentField;
 
                             if (currentField === 'TITLE') {
-                                const header = document.createElement('h2');
-                                header.style.marginTop = '0';
-                                header.style.color = 'white';
+                                const header = document.createElement('h3');
+                                header.className = 'font-headline-lg text-3xl font-bold text-on-surface marker-stroke mb-2';
                                 window.renderQueue.push({ type: 'append', parent: card, el: header });
-
-                                for (let c of labelText) {
-                                    window.renderQueue.push({ type: 'char', char: c, el: header });
-                                }
-
+                                
+                                for (let c of labelText) { window.renderQueue.push({ type: 'char', char: c, el: header }); }
+                                
                                 const contentEl = document.createElement('span');
-                                contentEl.style.display = 'block';
-                                contentEl.style.fontWeight = 'normal';
+                                contentEl.className = 'block font-normal mt-1';
                                 window.renderQueue.push({ type: 'append', parent: header, el: contentEl });
                                 currentContentEl = contentEl;
                             } else if (currentField === 'TAGLINE') {
                                 const p = document.createElement('p');
-                                p.style = 'font-style: italic; margin-bottom: 1.5rem; color: var(--primary); font-weight: 600; font-size: 1.1rem; line-height: 1.4;';
+                                p.className = 'font-accent-scribble text-on-surface-variant mb-6 text-lg transform rotate-[-1deg]';
                                 window.renderQueue.push({ type: 'append', parent: card, el: p });
                                 currentContentEl = p;
                             } else {
                                 const catDiv = document.createElement('div');
-                                catDiv.className = 'category';
+                                catDiv.className = 'mb-4';
                                 window.renderQueue.push({ type: 'append', parent: card, el: catDiv });
 
                                 const titleDiv = document.createElement('div');
-                                titleDiv.className = 'category-title';
+                                const bg = bgColors[colorIdx % 3];
+                                const textC = textColors[colorIdx % 3];
+                                colorIdx++;
+                                const rot = colorIdx % 2 === 0 ? 'rotate-[1deg]' : 'rotate-[-1deg]';
+                                
+                                titleDiv.className = `${bg} ${textC} px-2 py-0.5 text-xs font-label-mono rough-border transform ${rot} inline-block mb-2 uppercase`;
                                 window.renderQueue.push({ type: 'append', parent: catDiv, el: titleDiv });
 
-                                for (let c of labelText) {
-                                    window.renderQueue.push({ type: 'char', char: c, el: titleDiv });
-                                }
+                                for (let c of labelText) { window.renderQueue.push({ type: 'char', char: c, el: titleDiv }); }
 
                                 const contentDiv = document.createElement((currentField === 'LEARN' || currentField === 'FEATURES') ? 'ul' : 'p');
-                                contentDiv.className = 'category-content';
-                                if (contentDiv.tagName === 'UL') {
-                                    contentDiv.style.marginTop = '0';
-                                    contentDiv.style.paddingLeft = '1.2rem';
-                                }
+                                contentDiv.className = currentField === 'TOOLS' ? 'text-on-surface font-label-mono text-sm' : 'text-on-surface';
                                 window.renderQueue.push({ type: 'append', parent: catDiv, el: contentDiv });
                                 currentContentEl = contentDiv;
                             }
-
                             fieldBuffer = "";
                         } else if (closeMatch) {
                             const closedField = closeMatch[1];
                             if (closedField === "LEARN" || closedField === "FEATURES" || closedField === "TOOLS") {
-                                if (currentContentEl) {
-                                    window.renderQueue.push({ type: 'post-process', el: currentContentEl, processType: closedField });
-                                }
+                                if (currentContentEl) { window.renderQueue.push({ type: 'post-process', el: currentContentEl, processType: closedField }); }
                             }
                             currentField = null;
                             currentContentEl = null;
@@ -923,9 +550,7 @@
                             if (currentContentEl) {
                                 for (let c of fieldBuffer) {
                                     window.renderQueue.push({ type: 'char', char: c, el: currentContentEl });
-                                    if (currentField && fieldMapping[currentField]) {
-                                        generatedData[fieldMapping[currentField]] += c;
-                                    }
+                                    if (currentField && fieldMapping[currentField]) generatedData[fieldMapping[currentField]] += c;
                                 }
                             }
                             fieldBuffer = "";
@@ -935,9 +560,7 @@
                     } else {
                         if (currentContentEl) {
                             window.renderQueue.push({ type: 'char', char: char, el: currentContentEl });
-                            if (currentField && fieldMapping[currentField]) {
-                                generatedData[fieldMapping[currentField]] += char;
-                            }
+                            if (currentField && fieldMapping[currentField]) generatedData[fieldMapping[currentField]] += char;
                         }
                     }
                 }
@@ -947,12 +570,12 @@
                 eventSource.close();
                 btn.disabled = false;
                 loader.style.display = 'none';
-                errorMsg.textContent = "Connection lost or stream error.";
+                errorMsg.textContent = "Connection lost.";
                 errorMsg.style.display = 'block';
             };
         });
 
-        // Discovery Section Logic
+        // Discovery Logic
         const discoverBtn = document.getElementById('refreshDiscoverBtn');
         const discoverLoader = document.getElementById('discoverLoader');
         const discoverErrorMsg = document.getElementById('discoverErrorMsg');
@@ -961,34 +584,28 @@
         discoverBtn.addEventListener('click', () => {
             discoverBtn.disabled = true;
             discoverErrorMsg.style.display = 'none';
-            discoverCardsContainer.classList.remove('visible');
+            discoverCardsContainer.classList.add('hidden');
             discoverCardsContainer.innerHTML = '';
+            discoverLoader.style.display = 'block';
 
             const eventSource = new EventSource('/discover');
-
             let discoverGeneratedData = [];
-
-            discoverCardsContainer.style.display = 'grid'; // Grid holds the 3 cards natively
+            discoverCardsContainer.classList.remove('hidden');
 
             for (let i = 0; i < 3; i++) {
-                const div = document.createElement('div');
-                div.className = 'card visible';
-                div.style.display = 'block';
-                div.style.transform = 'none';
-                div.style.opacity = '1';
+                const div = document.createElement('article');
+                div.className = 'bg-surface-container p-6 rough-border hard-offset stacked-paper transform hover:rotate-[1deg] transition-transform duration-200 flex flex-col';
+                div.style.transform = `rotate(${i % 2 === 0 ? '-0.5deg' : '0.5deg'})`;
                 div.innerHTML = skeletonHTML;
                 discoverCardsContainer.appendChild(div);
                 discoverGeneratedData.push({
-                    mode: 'discovery',
-                    title: '', tagline: '', description: '', inspired_by: '',
+                    mode: 'discovery', title: '', tagline: '', description: '', inspired_by: '',
                     what_youll_learn: '', tools_and_tech: '', first_step: '', estimated_time: ''
                 });
             }
-            void discoverCardsContainer.offsetWidth;
-            discoverCardsContainer.classList.add('visible');
 
             startRenderQueue(() => {
-                if (eventSource.readyState === EventSource.CLOSED && discoverCardsContainer.children[0] && !discoverCardsContainer.children[0].querySelector('.save-btn')) {
+                if (eventSource.readyState === EventSource.CLOSED && discoverCardsContainer.children[0] && !discoverCardsContainer.children[0].querySelector('button')) {
                     for (let i = 0; i < 3; i++) {
                         if (discoverCardsContainer.children[i]) {
                             createSaveButton(discoverGeneratedData[i], discoverCardsContainer.children[i]);
@@ -1003,6 +620,9 @@
             let currentField = null;
             let fieldBuffer = "";
             let currentContentEl = null;
+            let colorIdx = 0;
+            const bgColors = ['bg-primary', 'bg-secondary', 'bg-tertiary'];
+            const textColors = ['text-on-primary', 'text-on-secondary', 'text-on-tertiary'];
 
             const dFieldMapping = {
                 'TITLE': 'title', 'TAGLINE': 'tagline', 'DESCRIPTION': 'description',
@@ -1014,14 +634,13 @@
                 if (event.data === "[DONE]") {
                     eventSource.close();
                     discoverBtn.disabled = false;
+                    discoverLoader.style.display = 'none';
                     if (window.cursorEl.parentNode) window.cursorEl.parentNode.removeChild(window.cursorEl);
                     return;
                 }
 
                 if (isFirstChunk) {
-                    for (let i = 0; i < 3; i++) {
-                        window.renderQueue.push({ type: 'clear', el: discoverCardsContainer.children[i] });
-                    }
+                    for (let i = 0; i < 3; i++) { window.renderQueue.push({ type: 'clear', el: discoverCardsContainer.children[i] }); }
                     isFirstChunk = false;
                 }
 
@@ -1033,12 +652,12 @@
                     discoverErrorMsg.style.display = 'block';
                     eventSource.close();
                     discoverBtn.disabled = false;
+                    discoverLoader.style.display = 'none';
                     return;
                 }
 
                 for (let i = 0; i < chunk.length; i++) {
                     const char = chunk[i];
-
                     if (char === '[') {
                         fieldBuffer += char;
                     } else if (char === ']' && fieldBuffer.includes('[')) {
@@ -1050,64 +669,53 @@
                             currentField = tagMatch[1];
                             const labelText = labels[currentField] || currentField;
 
-                            if (currentField === 'TITLE') {
-                                currentCardIndex++;
-                            }
-
+                            if (currentField === 'TITLE') currentCardIndex++;
                             const targetCard = discoverCardsContainer.children[Math.min(2, Math.max(0, currentCardIndex))];
 
                             if (targetCard) {
                                 if (currentField === 'TITLE') {
                                     const header = document.createElement('h3');
-                                    header.style.marginTop = '0';
-                                    header.style.color = 'white';
+                                    header.className = 'font-headline-lg text-2xl font-bold text-on-surface marker-stroke mb-2';
                                     window.renderQueue.push({ type: 'append', parent: targetCard, el: header });
-
-                                    for (let c of labelText) {
-                                        window.renderQueue.push({ type: 'char', char: c, el: header });
-                                    }
-
+                                    
+                                    for (let c of labelText) { window.renderQueue.push({ type: 'char', char: c, el: header }); }
+                                    
                                     const contentEl = document.createElement('span');
-                                    contentEl.style.display = 'block';
-                                    contentEl.style.fontWeight = 'normal';
+                                    contentEl.className = 'block font-normal mt-1';
                                     window.renderQueue.push({ type: 'append', parent: header, el: contentEl });
                                     currentContentEl = contentEl;
                                 } else if (currentField === 'TAGLINE') {
                                     const p = document.createElement('p');
-                                    p.style = 'font-style: italic; margin-bottom: 1.5rem; color: var(--primary); font-weight: 600; font-size: 1.1rem; line-height: 1.4;';
+                                    p.className = 'font-accent-scribble text-on-surface-variant mb-6 text-lg transform rotate-[-1deg]';
                                     window.renderQueue.push({ type: 'append', parent: targetCard, el: p });
                                     currentContentEl = p;
                                 } else {
                                     const catDiv = document.createElement('div');
-                                    catDiv.className = 'category';
+                                    catDiv.className = 'mb-4';
                                     window.renderQueue.push({ type: 'append', parent: targetCard, el: catDiv });
 
                                     const titleDiv = document.createElement('div');
-                                    titleDiv.className = 'category-title';
+                                    const bg = bgColors[colorIdx % 3];
+                                    const textC = textColors[colorIdx % 3];
+                                    colorIdx++;
+                                    const rot = colorIdx % 2 === 0 ? 'rotate-[1deg]' : 'rotate-[-1deg]';
+                                    
+                                    titleDiv.className = `${bg} ${textC} px-2 py-0.5 text-xs font-label-mono rough-border transform ${rot} inline-block mb-2 uppercase`;
                                     window.renderQueue.push({ type: 'append', parent: catDiv, el: titleDiv });
 
-                                    for (let c of labelText) {
-                                        window.renderQueue.push({ type: 'char', char: c, el: titleDiv });
-                                    }
+                                    for (let c of labelText) { window.renderQueue.push({ type: 'char', char: c, el: titleDiv }); }
 
                                     const contentDiv = document.createElement((currentField === 'LEARN' || currentField === 'FEATURES') ? 'ul' : 'p');
-                                    contentDiv.className = 'category-content';
-                                    if (contentDiv.tagName === 'UL') {
-                                        contentDiv.style.marginTop = '0';
-                                        contentDiv.style.paddingLeft = '1.2rem';
-                                    }
+                                    contentDiv.className = currentField === 'TOOLS' ? 'text-on-surface font-label-mono text-sm' : 'text-on-surface';
                                     window.renderQueue.push({ type: 'append', parent: catDiv, el: contentDiv });
                                     currentContentEl = contentDiv;
                                 }
                             }
-
                             fieldBuffer = "";
                         } else if (closeMatch) {
                             const closedField = closeMatch[1];
                             if (closedField === "LEARN" || closedField === "FEATURES" || closedField === "TOOLS") {
-                                if (currentContentEl) {
-                                    window.renderQueue.push({ type: 'post-process', el: currentContentEl, processType: closedField });
-                                }
+                                if (currentContentEl) { window.renderQueue.push({ type: 'post-process', el: currentContentEl, processType: closedField }); }
                             }
                             currentField = null;
                             currentContentEl = null;
@@ -1135,19 +743,17 @@
                     }
                 }
             };
-
             eventSource.onerror = function (err) {
                 eventSource.close();
                 discoverBtn.disabled = false;
                 discoverLoader.style.display = 'none';
-                discoverErrorMsg.textContent = "Connection lost or stream error.";
+                discoverErrorMsg.textContent = "Connection lost.";
                 discoverErrorMsg.style.display = 'block';
             };
         });
 
-        // Load initial tab logic
+        // Init
         fetchSavedIdeas();
     </script>
 </body>
-
 </html>
